@@ -14,10 +14,12 @@ import {
   MapPin,
   Menu,
   MessageCircle,
+  Moon,
   Play,
   Recycle,
   ScanFace,
   ShieldCheck,
+  Sun,
 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa6";
 import {
@@ -43,6 +45,27 @@ import logoWhite from "./assets/logo-bzs-white.png";
 
 const WHATSAPP_PHONE = "554532842212";
 const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/kKkZ9n5iDq3MT7oMA";
+const THEME_STORAGE_KEY = "bzs-theme";
+
+function getPreferredTheme() {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+
+  try {
+    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+
+    if (savedTheme === "dark" || savedTheme === "light") {
+      return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  } catch {
+    return "light";
+  }
+}
 
 const whatsappMessages = {
   header:
@@ -137,9 +160,10 @@ function ScrollManager() {
   return null;
 }
 
-function Header() {
+function Header({ theme, onToggleTheme }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const nextThemeLabel = theme === "dark" ? "claro" : "escuro";
 
   useEffect(() => {
     const updateHeaderState = () => setIsScrolled(window.scrollY > 18);
@@ -172,17 +196,6 @@ function Header() {
           <img src={logo} alt="BZS Tecnologia" />
         </Link>
 
-        <button
-          className="nav-toggle"
-          type="button"
-          aria-expanded={isMenuOpen}
-          aria-controls="menu-principal"
-          onClick={() => setIsMenuOpen((current) => !current)}
-        >
-          <Menu aria-hidden="true" />
-          <span className="sr-only">Abrir menu</span>
-        </button>
-
         <div
           className={`nav-links${isMenuOpen ? " is-open" : ""}`}
           id="menu-principal"
@@ -198,15 +211,45 @@ function Header() {
           ))}
         </div>
 
-        <a
-          className="nav-cta"
-          href={getWhatsAppHref(whatsappMessages.header)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <MessageCircle aria-hidden="true" />
-          Falar com a BZS
-        </a>
+        <div className="nav-actions">
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label={`Ativar tema ${nextThemeLabel}`}
+            aria-pressed={theme === "dark"}
+            data-active-theme={theme}
+            title={`Ativar tema ${nextThemeLabel}`}
+            onClick={onToggleTheme}
+          >
+            <span className="theme-toggle-track" aria-hidden="true">
+              <Sun className="theme-icon theme-icon-sun" />
+              <Moon className="theme-icon theme-icon-moon" />
+              <span className="theme-toggle-thumb" />
+            </span>
+            <span className="sr-only">Alternar tema</span>
+          </button>
+
+          <a
+            className="nav-cta"
+            href={getWhatsAppHref(whatsappMessages.header)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <MessageCircle aria-hidden="true" />
+            Falar com a BZS
+          </a>
+
+          <button
+            className="nav-toggle"
+            type="button"
+            aria-expanded={isMenuOpen}
+            aria-controls="menu-principal"
+            onClick={() => setIsMenuOpen((current) => !current)}
+          >
+            <Menu aria-hidden="true" />
+            <span className="sr-only">Abrir menu</span>
+          </button>
+        </div>
       </nav>
     </header>
   );
@@ -872,10 +915,33 @@ function Footer() {
 }
 
 function AppShell() {
+  const [theme, setTheme] = useState(getPreferredTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor?.setAttribute(
+      "content",
+      theme === "dark" ? "#06181f" : "#062034",
+    );
+
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // Ignore storage restrictions and keep the in-session theme.
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
+
   return (
     <>
       <ScrollManager />
-      <Header />
+      <Header theme={theme} onToggleTheme={toggleTheme} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sistemas/:slug" element={<SystemPage />} />

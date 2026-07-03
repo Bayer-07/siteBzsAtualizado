@@ -8,6 +8,27 @@
       content="BZS Tecnologia desenvolve sistemas em nuvem para gestão pública, cooperativas, transporte escolar, bibliotecas e controle operacional."
     />
     <meta name="theme-color" content="#062034" />
+    <script>
+      (() => {
+        const key = "bzs-theme";
+        let theme = "light";
+
+        try {
+          const savedTheme = window.localStorage.getItem(key);
+          theme =
+            savedTheme === "dark" || savedTheme === "light"
+              ? savedTheme
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+        } catch {
+          theme = "light";
+        }
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <title>BZS Tecnologia | Sistemas em nuvem para gestão inteligente</title>
 
     <link rel="icon" href="/favicon.png" />

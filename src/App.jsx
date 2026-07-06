@@ -20,6 +20,7 @@ import {
   ScanFace,
   ShieldCheck,
   Sun,
+  X,
 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa6";
 import {
@@ -39,9 +40,9 @@ import {
   privacyPolicySummary,
   privacyPolicyTitle,
 } from "./data/privacyPolicy.js";
-import heroImage from "./assets/hero-bzs-cloud.png";
-import logo from "./assets/logo-bzs.png";
-import logoWhite from "./assets/logo-bzs-white.png";
+import heroImage from "./assets/hero-bzs-cloud.webp";
+import logo from "./assets/logo-bzs.webp";
+import logoWhite from "./assets/logo-bzs-white.webp";
 
 const WHATSAPP_PHONE = "554532842212";
 const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/kKkZ9n5iDq3MT7oMA";
@@ -186,8 +187,18 @@ function Header({ theme, onToggleTheme }) {
     return () => window.removeEventListener("resize", closeOnDesktop);
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", isMenuOpen);
+
+    return () => document.body.classList.remove("menu-open");
+  }, [isMenuOpen]);
+
   return (
-    <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
+    <header
+      className={`site-header${isScrolled ? " is-scrolled" : ""}${
+        isMenuOpen ? " is-menu-open" : ""
+      }`}
+    >
       <a className="skip-link" href="#conteudo">
         Ir para o conteúdo
       </a>
@@ -201,13 +212,42 @@ function Header({ theme, onToggleTheme }) {
           id="menu-principal"
         >
           {navItems.map((item) => (
-            <Link
-              to={item.to}
+            <div
+              className={`nav-item${item.to === "/#solucoes" ? " has-dropdown" : ""}`}
               key={item.to}
-              onClick={() => setIsMenuOpen(false)}
             >
-              {item.label}
-            </Link>
+              <Link
+                className="nav-link"
+                to={item.to}
+                aria-haspopup={item.to === "/#solucoes" ? "true" : undefined}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+
+              {item.to === "/#solucoes" && (
+                <div className="nav-dropdown" aria-label="Sistemas">
+                  {systems.map((system) => {
+                    const SystemIcon =
+                      iconMap[system.iconKey] || LayoutDashboard;
+
+                    return (
+                      <Link
+                        className="nav-dropdown-link"
+                        to={`/sistemas/${system.slug}`}
+                        key={system.slug}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="nav-dropdown-icon">
+                          <SystemIcon aria-hidden="true" />
+                        </span>
+                        <span>{system.title}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
@@ -246,8 +286,10 @@ function Header({ theme, onToggleTheme }) {
             aria-controls="menu-principal"
             onClick={() => setIsMenuOpen((current) => !current)}
           >
-            <Menu aria-hidden="true" />
-            <span className="sr-only">Abrir menu</span>
+            {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+            <span className="sr-only">
+              {isMenuOpen ? "Fechar menu" : "Abrir menu"}
+            </span>
           </button>
         </div>
       </nav>
@@ -332,10 +374,7 @@ function Solutions() {
             const Icon = iconMap[system.iconKey];
 
             return (
-              <article
-                className={`solution-card${system.slug === "selfie" ? " featured" : ""}`}
-                key={system.slug}
-              >
+              <article className="solution-card" key={system.slug}>
                 <div className="icon-box">
                   <Icon aria-hidden="true" />
                 </div>
@@ -924,7 +963,7 @@ function AppShell() {
     const themeColor = document.querySelector('meta[name="theme-color"]');
     themeColor?.setAttribute(
       "content",
-      theme === "dark" ? "#06181f" : "#062034",
+      theme === "dark" ? "#2b2e35" : "#2aa6df",
     );
 
     try {

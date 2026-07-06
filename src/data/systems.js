@@ -1,20 +1,20 @@
-import recicleIcon from "../assets/systems/recicle-icon.jpg";
-import recicleScreen from "../assets/systems/recicle-screen.png";
-import selfieIcon from "../assets/systems/selfie-icon.jpg";
-import selfieScreen from "../assets/systems/selfie-screen.jpg";
-import selfieGalleryOne from "../assets/systems/selfie-gallery-1.jpg";
-import selfieGalleryTwo from "../assets/systems/selfie-gallery-2.jpg";
-import selfieGalleryThree from "../assets/systems/selfie-gallery-3.jpg";
-import selfieGalleryFour from "../assets/systems/selfie-gallery-4.jpg";
-import aguaGasIcon from "../assets/systems/agua-gas-icon.png";
-import aguaGasScreen from "../assets/systems/agua-gas-screen.png";
-import transporteIcon from "../assets/systems/transporte-icon.png";
-import transporteScreen from "../assets/systems/transporte-screen.jpg";
-import transporteDetail from "../assets/systems/transporte-detail.jpg";
-import bibliotecasIcon from "../assets/systems/bibliotecas-icon.png";
-import bibliotecasScreen from "../assets/systems/bibliotecas-screen.jpg";
+import recicleIcon from "../assets/systems/recicle-icon.webp";
+import recicleScreen from "../assets/systems/recicle-screen.webp";
+import selfieIcon from "../assets/systems/selfie-icon.webp";
+import selfieScreen from "../assets/systems/selfie-screen.webp";
+import selfieGalleryOne from "../assets/systems/selfie-gallery-1.webp";
+import selfieGalleryTwo from "../assets/systems/selfie-gallery-2.webp";
+import selfieGalleryThree from "../assets/systems/selfie-gallery-3.webp";
+import selfieGalleryFour from "../assets/systems/selfie-gallery-4.webp";
+import aguaGasIcon from "../assets/systems/agua-gas-icon.webp";
+import aguaGasScreen from "../assets/systems/agua-gas-screen.webp";
+import transporteIcon from "../assets/systems/transporte-icon.webp";
+import transporteScreen from "../assets/systems/transporte-screen.webp";
+import transporteDetail from "../assets/systems/transporte-detail.webp";
+import bibliotecasIcon from "../assets/systems/bibliotecas-icon.webp";
+import bibliotecasScreen from "../assets/systems/bibliotecas-screen.webp";
 
-export const systems = [
+const systemsData = [
   {
     slug: "bzs-recicle",
     title: "BZS Recicle",
@@ -300,6 +300,18 @@ export const systems = [
     gallery: [],
   },
 ];
+
+const systemOrder = [
+  "controle-agua-gas",
+  "transporte-escolar",
+  "bzs-recicle",
+  "selfie",
+  "bibliotecas",
+];
+
+export const systems = systemOrder
+  .map((slug) => systemsData.find((system) => system.slug === slug))
+  .filter(Boolean);
 
 export function getSystemBySlug(slug) {
   return systems.find((system) => system.slug === slug);

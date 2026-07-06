@@ -947,7 +947,8 @@ button {
   background: var(--teal);
 }
 
-.contact-section {
+.contact-section,
+.outcomes-section {
   color: var(--white);
   background:
     linear-gradient(135deg, rgba(43, 46, 53, 0.98), rgba(42, 166, 223, 0.9)),
@@ -1200,13 +1201,6 @@ button {
 .module-card p {
   margin: 0;
   color: var(--muted);
-}
-
-.outcomes-section {
-  color: var(--white);
-  background:
-    linear-gradient(135deg, rgba(43, 46, 53, 0.98), rgba(42, 166, 223, 0.9)),
-    var(--navy);
 }
 
 .outcome-list {

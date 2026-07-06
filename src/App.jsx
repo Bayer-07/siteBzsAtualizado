@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -165,6 +165,7 @@ function Header({ theme, onToggleTheme }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const nextThemeLabel = theme === "dark" ? "claro" : "escuro";
+  const headerLogo = theme === "dark" ? logoWhite : logo;
 
   useEffect(() => {
     const updateHeaderState = () => setIsScrolled(window.scrollY > 18);
@@ -204,7 +205,7 @@ function Header({ theme, onToggleTheme }) {
       </a>
       <nav className="nav-shell" aria-label="Navegação principal">
         <Link className="brand" to="/" aria-label="BZS Tecnologia">
-          <img src={logo} alt="BZS Tecnologia" />
+          <img src={headerLogo} alt="BZS Tecnologia" />
         </Link>
 
         <div
@@ -955,6 +956,7 @@ function Footer() {
 
 function AppShell() {
   const [theme, setTheme] = useState(getPreferredTheme);
+  const themeTransitionTimeout = useRef(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -973,7 +975,32 @@ function AppShell() {
     }
   }, [theme]);
 
+  useEffect(
+    () => () => {
+      if (themeTransitionTimeout.current) {
+        window.clearTimeout(themeTransitionTimeout.current);
+      }
+    },
+    [],
+  );
+
   const toggleTheme = () => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!prefersReducedMotion) {
+      document.documentElement.classList.add("theme-transitioning");
+
+      if (themeTransitionTimeout.current) {
+        window.clearTimeout(themeTransitionTimeout.current);
+      }
+
+      themeTransitionTimeout.current = window.setTimeout(() => {
+        document.documentElement.classList.remove("theme-transitioning");
+      }, 260);
+    }
+
     setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
   };
 

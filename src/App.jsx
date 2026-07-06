@@ -350,7 +350,7 @@ function Hero() {
           </a>
           <a
             className="btn btn-secondary"
-            href="mailto:bzs@bzs.com.br"
+            href="https://wa.me/554532842212?text=Ol%C3%A1!%20Encontrei%20a%20empresa%20de%20voc%C3%AAs%20no%20Google%20e%20gostaria%20de%20saber%20mais%20sobre%20as%20suas%20solu%C3%A7%C3%B5es."
             target="_blank"
             rel="noreferrer"
           >

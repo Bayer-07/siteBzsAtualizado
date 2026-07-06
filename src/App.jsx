@@ -19,6 +19,7 @@ import {
   Recycle,
   ScanFace,
   ShieldCheck,
+  Star,
   Sun,
   X,
 } from "lucide-react";
@@ -46,6 +47,8 @@ import logoWhite from "./assets/logo-bzs-white.webp";
 
 const WHATSAPP_PHONE = "554532842212";
 const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/kKkZ9n5iDq3MT7oMA";
+const GOOGLE_REVIEWS_URL =
+  "https://www.google.com/maps/place/BZS+Tecnologia/@-24.5590077,-54.0578357,20.13z/data=!4m6!3m5!1s0x94f38040b2ca4f03:0xd3b9314d9cbdd55f!8m2!3d-24.5590114!4d-54.0576494!16s%2Fg%2F11c1s8pq90";
 const THEME_STORAGE_KEY = "bzs-theme";
 
 function getPreferredTheme() {
@@ -140,6 +143,28 @@ const steps = [
     number: "03",
     title: "Evolução",
     text: "Acompanhamento para ajustes, novas necessidades e melhoria contínua.",
+  },
+];
+
+const googleReviews = [
+  {
+    name: "Guilho Cesar",
+    text: "Ótimo",
+  },
+  {
+    name: "Carlos Cremonini",
+  },
+  {
+    name: "Guilherme Weber",
+  },
+  {
+    name: "Marco Antonio Técnico Multifuncionais",
+  },
+  {
+    name: "matheus antunes fuzi",
+  },
+  {
+    name: "bruno h",
   },
 ];
 
@@ -466,6 +491,184 @@ function Method() {
   );
 }
 
+function GoogleReviews() {
+  const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [isReviewCarouselPaused, setIsReviewCarouselPaused] = useState(false);
+  const reviewCarouselRef = useRef(null);
+
+  const goToReview = (index) => {
+    setActiveReviewIndex(
+      (index + googleReviews.length) % googleReviews.length,
+    );
+  };
+
+  const pauseReviewCarousel = () => setIsReviewCarouselPaused(true);
+
+  const resumeReviewCarousel = (event) => {
+    if (
+      event?.relatedTarget &&
+      event.currentTarget.contains(event.relatedTarget)
+    ) {
+      return;
+    }
+
+    setIsReviewCarouselPaused(false);
+  };
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (isReviewCarouselPaused || prefersReducedMotion) {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveReviewIndex((currentIndex) =>
+        (currentIndex + 1) % googleReviews.length,
+      );
+    }, 4200);
+
+    return () => window.clearInterval(intervalId);
+  }, [isReviewCarouselPaused]);
+
+  useEffect(() => {
+    const carousel = reviewCarouselRef.current;
+    const activeSlide = reviewCarouselRef.current?.querySelector(
+      `[data-review-index="${activeReviewIndex}"]`,
+    );
+
+    if (!carousel || !activeSlide) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    carousel.scrollTo({
+      left: activeSlide.offsetLeft - carousel.offsetLeft,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+  }, [activeReviewIndex]);
+
+  return (
+    <section
+      className="section reviews-section"
+      id="avaliacoes"
+      aria-labelledby="reviews-title"
+    >
+      <div className="section-inner">
+        <div className="reviews-header">
+          <div className="section-heading compact">
+            <p className="section-kicker">Avaliações</p>
+            <h2 id="reviews-title">Confiança também aparece no Google</h2>
+            <p>
+              Avaliações públicas do perfil da BZS Tecnologia no Google Maps,
+              com nota média de 4,6.
+            </p>
+          </div>
+
+          <a
+            className="reviews-score"
+            href={GOOGLE_REVIEWS_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Ver avaliações da BZS Tecnologia no Google Maps"
+          >
+            <span>4,6</span>
+            <div>
+              <strong>Google Maps</strong>
+              <small>Ver avaliações</small>
+            </div>
+            <ExternalLink aria-hidden="true" />
+          </a>
+        </div>
+
+        <div
+          className="review-carousel"
+          onMouseEnter={pauseReviewCarousel}
+          onMouseLeave={resumeReviewCarousel}
+          onFocus={pauseReviewCarousel}
+          onBlur={resumeReviewCarousel}
+        >
+          <div
+            className="review-track"
+            ref={reviewCarouselRef}
+            aria-live="polite"
+          >
+            {googleReviews.map((review, reviewIndex) => (
+              <article
+                className="review-card"
+                key={review.name}
+                data-review-index={reviewIndex}
+              >
+                <div className="review-card-head">
+                  <div>
+                    <h3>{review.name}</h3>
+                  </div>
+                </div>
+
+                <div className="review-stars" aria-label="5 estrelas">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Star key={index} aria-hidden="true" />
+                  ))}
+                </div>
+
+                {review.text ? (
+                  <p className="review-text">“{review.text}”</p>
+                ) : (
+                  <p className="review-note">
+                    Avaliação 5 estrelas no Google.
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <div className="review-carousel-controls">
+            <button
+              type="button"
+              className="review-arrow"
+              aria-label="Avaliação anterior"
+              onClick={() => goToReview(activeReviewIndex - 1)}
+            >
+              <ArrowLeft aria-hidden="true" />
+            </button>
+
+            <div className="review-dots" aria-label="Selecionar avaliação">
+              {googleReviews.map((review, reviewIndex) => (
+                <button
+                  type="button"
+                  key={review.name}
+                  className={`review-dot${
+                    reviewIndex === activeReviewIndex ? " is-active" : ""
+                  }`}
+                  aria-label={`Mostrar avaliação de ${review.name}`}
+                  aria-current={
+                    reviewIndex === activeReviewIndex ? "true" : undefined
+                  }
+                  onClick={() => goToReview(reviewIndex)}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="review-arrow"
+              aria-label="Próxima avaliação"
+              onClick={() => goToReview(activeReviewIndex + 1)}
+            >
+              <ArrowRight aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Contact() {
   return (
     <section
@@ -545,6 +748,7 @@ function HomePage() {
       <Solutions />
       <Features />
       <Method />
+      <GoogleReviews />
       <Contact />
     </main>
   );

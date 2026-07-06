@@ -761,6 +761,195 @@ button {
   margin-top: 0;
 }
 
+.reviews-section {
+  background:
+    linear-gradient(180deg, var(--paper), var(--surface-soft)),
+    var(--paper);
+}
+
+.reviews-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 34px;
+}
+
+.reviews-header .section-heading {
+  margin-bottom: 0;
+}
+
+.reviews-score {
+  min-width: 238px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.reviews-score > span {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  color: var(--button-ink);
+  font-size: 1.35rem;
+  font-weight: 800;
+  border-radius: 8px;
+  background: var(--teal);
+}
+
+.reviews-score strong,
+.reviews-score small {
+  display: block;
+}
+
+.reviews-score small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.reviews-score svg {
+  width: 18px;
+  height: 18px;
+  color: var(--teal-dark);
+}
+
+.review-carousel {
+  display: grid;
+  gap: 18px;
+}
+
+.review-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-padding-inline: 1px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.review-track::-webkit-scrollbar {
+  display: none;
+}
+
+.review-card {
+  flex: 0 0 calc((100% - 32px) / 3);
+  min-height: 174px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.review-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.review-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.review-stars {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f5a700;
+}
+
+.review-stars svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  stroke-width: 1.8;
+}
+
+.review-text {
+  margin: auto 0 0;
+  padding-top: 24px;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.review-note {
+  margin-top: auto;
+  padding-top: 24px;
+  font-weight: 700;
+}
+
+.review-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.review-arrow,
+.review-dot {
+  border: 1px solid var(--line);
+  color: var(--teal-dark);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.review-arrow {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.review-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.review-arrow:focus-visible,
+.review-dot:focus-visible {
+  outline: 3px solid var(--accent-strong-hover);
+  outline-offset: 3px;
+}
+
+.review-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.review-dot.is-active {
+  width: 24px;
+  border-color: var(--teal);
+  background: var(--teal);
+}
+
 .contact-section {
   color: var(--white);
   background:
@@ -1505,6 +1694,7 @@ button {
   .intro-grid,
   .method-grid,
   .contact-grid,
+  .reviews-header,
   .footer-inner,
   .system-hero-grid,
   .system-summary-grid,
@@ -1520,6 +1710,19 @@ button {
   .module-grid,
   .media-showcase {
     grid-template-columns: 1fr;
+  }
+
+  .reviews-header {
+    display: grid;
+    align-items: start;
+  }
+
+  .reviews-score {
+    width: min(100%, 360px);
+  }
+
+  .review-card {
+    flex-basis: calc((100% - 16px) / 2);
   }
 
   .solution-card,
@@ -1584,8 +1787,21 @@ button {
 
   .solution-card,
   .feature-item,
+  .review-card,
   .timeline li {
     padding: 20px;
+  }
+
+  .review-card {
+    flex-basis: 100%;
+  }
+
+  .reviews-score {
+    grid-template-columns: auto 1fr;
+  }
+
+  .reviews-score svg {
+    display: none;
   }
 
   .timeline li {

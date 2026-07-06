@@ -15,12 +15,12 @@
 
         try {
           const savedTheme = window.localStorage.getItem(key);
-          theme =
-            savedTheme === "dark" || savedTheme === "light"
-              ? savedTheme
-              : window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
+
+          if (savedTheme === "dark" || savedTheme === "light") {
+            theme = savedTheme;
+          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "dark";
+          }
         } catch {
           theme = "light";
         }
@@ -38,8 +38,8 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/assets/index-C4dd7UxN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-nK-kZX5I.css">
+    <script type="module" crossorigin src="/assets/index-Bok8AfGz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-P1GtCkjD.css">
   </head>
   <body>
     <div id="root"></div>

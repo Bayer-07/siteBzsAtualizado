@@ -15,12 +15,12 @@
 
         try {
           const savedTheme = window.localStorage.getItem(key);
-          theme =
-            savedTheme === "dark" || savedTheme === "light"
-              ? savedTheme
-              : window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
+
+          if (savedTheme === "dark" || savedTheme === "light") {
+            theme = savedTheme;
+          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "dark";
+          }
         } catch {
           theme = "light";
         }

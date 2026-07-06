@@ -50,6 +50,19 @@ const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/kKkZ9n5iDq3MT7oMA";
 const GOOGLE_REVIEWS_URL =
   "https://www.google.com/maps/place/BZS+Tecnologia/@-24.5590077,-54.0578357,20.13z/data=!4m6!3m5!1s0x94f38040b2ca4f03:0xd3b9314d9cbdd55f!8m2!3d-24.5590114!4d-54.0576494!16s%2Fg%2F11c1s8pq90";
 const THEME_STORAGE_KEY = "bzs-theme";
+const STAR_RATING_VALUES = [1, 2, 3, 4, 5];
+
+function getSystemThemePreference() {
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+
+  return "light";
+}
+
+function isReducedMotionPreferred() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 function getPreferredTheme() {
   if (typeof window === "undefined") {
@@ -63,9 +76,7 @@ function getPreferredTheme() {
       return savedTheme;
     }
 
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return getSystemThemePreference();
   } catch {
     return "light";
   }
@@ -255,7 +266,7 @@ function Header({ theme, onToggleTheme }) {
                 <div className="nav-dropdown" aria-label="Sistemas">
                   {systems.map((system) => {
                     const SystemIcon =
-                      iconMap[system.iconKey] || LayoutDashboard;
+                      iconMap[system.iconKey] ?? LayoutDashboard;
 
                     return (
                       <Link
@@ -326,11 +337,10 @@ function Header({ theme, onToggleTheme }) {
 function Hero() {
   return (
     <section className="hero" id="inicio" aria-labelledby="hero-title">
-      <div
+      <img
         className="hero-bg"
-        role="img"
-        aria-label="Ambiente digital com painéis de gestão em nuvem"
-        style={{ "--hero-image": `url(${heroImage})` }}
+        src={heroImage}
+        alt="Ambiente digital com painéis de gestão em nuvem"
       />
       <div className="hero-overlay" />
 
@@ -516,11 +526,7 @@ function GoogleReviews() {
   };
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (isReviewCarouselPaused || prefersReducedMotion) {
+    if (isReviewCarouselPaused || isReducedMotionPreferred()) {
       return undefined;
     }
 
@@ -543,13 +549,9 @@ function GoogleReviews() {
       return;
     }
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     carousel.scrollTo({
       left: activeSlide.offsetLeft - carousel.offsetLeft,
-      behavior: prefersReducedMotion ? "auto" : "smooth",
+      behavior: isReducedMotionPreferred() ? "auto" : "smooth",
     });
   }, [activeReviewIndex]);
 
@@ -611,8 +613,8 @@ function GoogleReviews() {
                 </div>
 
                 <div className="review-stars" aria-label="5 estrelas">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} aria-hidden="true" />
+                  {STAR_RATING_VALUES.map((ratingValue) => (
+                    <Star key={ratingValue} aria-hidden="true" />
                   ))}
                 </div>
 
@@ -754,6 +756,116 @@ function HomePage() {
   );
 }
 
+function getSystemMediaItems(system) {
+  const galleryImages = system.gallery.filter(
+    (image) => image !== system.secondaryImage,
+  );
+  const mediaItems = [];
+
+  if (system.videoUrl) {
+    mediaItems.push({ type: "video", src: system.videoUrl });
+  }
+
+  if (system.secondaryImage) {
+    mediaItems.push({
+      type: "image",
+      src: system.secondaryImage,
+      alt: `Detalhe visual do ${system.title}`,
+    });
+  }
+
+  galleryImages.forEach((image, index) => {
+    mediaItems.push({
+      type: "image",
+      src: image,
+      alt: `${system.title} imagem ${index + 1}`,
+    });
+  });
+
+  return mediaItems;
+}
+
+function hasSystemContext(system) {
+  return Boolean(
+    system.contextTitle || system.contextText || system.contextPoints?.length,
+  );
+}
+
+function SystemMediaItem({ item, systemTitle }) {
+  if (item.type === "video") {
+    return (
+      <div className="video-frame" key={item.src}>
+        <iframe
+          src={item.src}
+          title={`Vídeo do ${systemTitle}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+        <span>
+          <Play aria-hidden="true" />
+          Vídeo institucional
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <figure className="system-shot" key={item.src}>
+      <img src={item.src} alt={item.alt} />
+    </figure>
+  );
+}
+
+function SystemContextSection({ system, mediaItems }) {
+  if (!hasSystemContext(system) && !mediaItems.length) {
+    return null;
+  }
+
+  const contextLayoutClassName = mediaItems.length
+    ? "section-inner context-layout"
+    : "section-inner context-layout context-layout-text-only";
+  const mediaShowcaseClassName =
+    mediaItems.length === 1
+      ? "media-showcase media-showcase-single"
+      : "media-showcase";
+
+  return (
+    <section className="section media-section" aria-labelledby="media-title">
+      <div className={contextLayoutClassName}>
+        <div className="context-copy">
+          <p className="section-kicker">Detalhes</p>
+          <h2 id="media-title">
+            {system.contextTitle ?? "Como o sistema entra no dia a dia"}
+          </h2>
+          {system.contextText ? <p>{system.contextText}</p> : null}
+          {system.contextPoints?.length ? (
+            <ul className="context-list">
+              {system.contextPoints.map((point) => (
+                <li key={point}>
+                  <CheckCircle2 aria-hidden="true" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        {mediaItems.length ? (
+          <div className={mediaShowcaseClassName}>
+            {mediaItems.map((item) => (
+              <SystemMediaItem
+                item={item}
+                systemTitle={system.title}
+                key={item.src}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 function SystemPage() {
   const { slug } = useParams();
   const system = getSystemBySlug(slug);
@@ -762,29 +874,8 @@ function SystemPage() {
     return <Navigate to="/" replace />;
   }
 
-  const Icon = iconMap[system.iconKey];
-  const uniqueGallery = system.gallery.filter(
-    (image) => image !== system.secondaryImage,
-  );
-  const mediaItems = [
-    ...(system.videoUrl ? [{ type: "video", src: system.videoUrl }] : []),
-    ...(system.secondaryImage
-      ? [
-          {
-            type: "image",
-            src: system.secondaryImage,
-            alt: `Detalhe visual do ${system.title}`,
-          },
-        ]
-      : []),
-    ...uniqueGallery.map((image, index) => ({
-      type: "image",
-      src: image,
-      alt: `${system.title} imagem ${index + 1}`,
-    })),
-  ];
-  const hasContextSection =
-    system.contextTitle || system.contextText || system.contextPoints?.length;
+  const Icon = iconMap[system.iconKey] ?? LayoutDashboard;
+  const mediaItems = getSystemMediaItems(system);
 
   return (
     <main id="conteudo" className="system-page">
@@ -901,65 +992,7 @@ function SystemPage() {
         </div>
       </section>
 
-      {hasContextSection || mediaItems.length ? (
-        <section
-          className="section media-section"
-          aria-labelledby="media-title"
-        >
-          <div
-            className={`section-inner context-layout${
-              mediaItems.length ? "" : " context-layout-text-only"
-            }`}
-          >
-            <div className="context-copy">
-              <p className="section-kicker">Detalhes</p>
-              <h2 id="media-title">
-                {system.contextTitle || "Como o sistema entra no dia a dia"}
-              </h2>
-              {system.contextText ? <p>{system.contextText}</p> : null}
-              {system.contextPoints?.length ? (
-                <ul className="context-list">
-                  {system.contextPoints.map((point) => (
-                    <li key={point}>
-                      <CheckCircle2 aria-hidden="true" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-
-            {mediaItems.length ? (
-              <div
-                className={`media-showcase${
-                  mediaItems.length === 1 ? " media-showcase-single" : ""
-                }`}
-              >
-                {mediaItems.map((item) =>
-                  item.type === "video" ? (
-                    <div className="video-frame" key={item.src}>
-                      <iframe
-                        src={item.src}
-                        title={`Vídeo do ${system.title}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                      <span>
-                        <Play aria-hidden="true" />
-                        Vídeo institucional
-                      </span>
-                    </div>
-                  ) : (
-                    <figure className="system-shot" key={item.src}>
-                      <img src={item.src} alt={item.alt} />
-                    </figure>
-                  ),
-                )}
-              </div>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
+      <SystemContextSection system={system} mediaItems={mediaItems} />
 
       <section className="section system-cta">
         <div className="section-inner cta-panel">

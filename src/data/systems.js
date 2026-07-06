@@ -209,7 +209,7 @@ const systemsData = [
     image: transporteScreen,
     secondaryImage: transporteDetail,
     iconKey: "bus",
-    systemUrl: "http://ste.bzs.com.br/site/login",
+    systemUrl: "https://ste.bzs.com.br/site/login",
     sourceUrl: "https://www.bzs.com.br/solucoes/gestao-de-transporte-escolar/19",
     videoUrl: "https://www.youtube.com/embed/IQOZVInapPs",
     tags: ["Rotas", "Alunos", "Veículos", "Prestação de contas"],

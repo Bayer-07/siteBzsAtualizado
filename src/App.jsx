@@ -16,9 +16,11 @@ import {
   Menu,
   MessageCircle,
   Moon,
+  Phone,
   Play,
   Recycle,
   ScanFace,
+  Send,
   ShieldCheck,
   Star,
   Sun,
@@ -53,6 +55,7 @@ const GOOGLE_REVIEWS_URL =
 const THEME_STORAGE_KEY = "bzs-theme";
 const STAR_RATING_VALUES = [1, 2, 3, 4, 5];
 const COUNT_UP_DURATION_MS = 1100;
+const CONTACT_FORM_NAME = "site-contact";
 
 function getSystemThemePreference() {
   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -99,6 +102,16 @@ function getWhatsAppHref(message) {
   return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 }
 
+const contactPreferenceOptions = ["WhatsApp", "E-mail", "Ligação"];
+
+const initialContactFormValues = {
+  name: "",
+  phone: "",
+  email: "",
+  message: "",
+  preferredContact: contactPreferenceOptions[0],
+};
+
 const navItems = [
   { to: "/#sobre", label: "Sobre nós" },
   { to: "/#solucoes", label: "Soluções" },
@@ -113,7 +126,7 @@ const footerPageLinks = [
   { to: "/#solucoes", label: "Soluções" },
   { to: "/#diferenciais", label: "Diferenciais" },
   { to: "/#metodo", label: "Método" },
-  { to: "/#contato", label: "Contato" },
+  { to: "/contato", label: "Contato" },
   { to: "/politica-de-privacidade", label: "Política de Privacidade" },
 ];
 
@@ -157,7 +170,7 @@ const steps = [
   },
   {
     number: "03",
-    title: "Evolução",
+    title: "Melhoria contínua",
     text: "Acompanhamento para ajustes, novas necessidades e melhoria contínua.",
   },
 ];
@@ -185,9 +198,9 @@ const aboutStats = [
     label: "anos no mercado",
   },
   {
-    id: "states",
-    target: 5,
-    label: "estados atendidos",
+    id: "brazil",
+    value: "Brasil",
+    label: "atendemos todo o Brasil",
   },
   {
     id: "cloud",
@@ -384,7 +397,7 @@ function Hero() {
       <div className="hero-overlay" />
 
       <div className="hero-content">
-        <p className="eyebrow">Tecnologia para gestão com clareza</p>
+        <p className="eyebrow">Tecnologia para gestão com clareza e objetividade</p>
         <h1 id="hero-title">BZS Tecnologia</h1>
         <p className="hero-copy">
           Sistemas em nuvem para municípios, cooperativas e organizações que
@@ -662,9 +675,10 @@ function Method() {
             BZS combina diagnóstico, configuração e acompanhamento para entregar
             sistemas que entram no dia a dia com naturalidade.
           </p>
-          <a className="text-link" href="#contato">
+          <Link className="btn btn-primary method-cta" to="/contato">
+            <MessageCircle aria-hidden="true" />
             Conversar sobre um projeto
-          </a>
+          </Link>
         </div>
 
         <ol className="timeline">
@@ -904,6 +918,228 @@ function Contact() {
         </div>
       </div>
     </section>
+  );
+}
+
+function ContactPage() {
+  const [formValues, setFormValues] = useState(initialContactFormValues);
+  const [formStatus, setFormStatus] = useState("idle");
+  const isSubmitting = formStatus === "submitting";
+
+  const updateFormValue = (event) => {
+    const { name, value } = event.target;
+
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      [name]: value,
+    }));
+    setFormStatus("idle");
+  };
+
+  const submitContactForm = async (event) => {
+    event.preventDefault();
+    setFormStatus("submitting");
+
+    const formBody = new URLSearchParams({
+      "form-name": CONTACT_FORM_NAME,
+      ...formValues,
+    });
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Contact form submission failed.");
+      }
+
+      setFormValues(initialContactFormValues);
+      setFormStatus("success");
+    } catch {
+      setFormStatus("error");
+    }
+  };
+
+  return (
+    <main id="conteudo" className="contact-page">
+      <section className="contact-page-hero" aria-labelledby="contact-page-title">
+        <div className="section-inner">
+          <Link className="privacy-back-link" to="/">
+            <ArrowLeft aria-hidden="true" />
+            Voltar ao início
+          </Link>
+          <p className="eyebrow">Contato</p>
+          <h1 id="contact-page-title">Vamos conversar sobre o seu projeto?</h1>
+          <p>
+            Conte um pouco sobre a necessidade da sua organização e escolha o
+            canal de retorno que faz mais sentido para você.
+          </p>
+        </div>
+      </section>
+
+      <section className="section contact-form-section">
+        <div className="section-inner contact-form-layout">
+          <aside className="contact-page-aside" aria-label="Canais de contato">
+            <div>
+              <p className="section-kicker">Atendimento BZS</p>
+              <h2>Uma equipe próxima para entender sua rotina.</h2>
+              <p>
+                A BZS atende empresas, órgãos públicos e equipes que precisam
+                de sistemas em nuvem para controlar processos com mais clareza.
+              </p>
+            </div>
+
+            <div className="contact-methods">
+              <a
+                className="contact-method"
+                href={getWhatsAppHref(whatsappMessages.contact)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle aria-hidden="true" />
+                <span>
+                  <strong>WhatsApp</strong>
+                  +55 (45) 3284-2212
+                </span>
+              </a>
+              <a
+                className="contact-method"
+                href="mailto:bzs@bzs.com.br"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Mail aria-hidden="true" />
+                <span>
+                  <strong>E-mail</strong>
+                  bzs@bzs.com.br
+                </span>
+              </a>
+              <a className="contact-method" href="tel:+554532842212">
+                <Phone aria-hidden="true" />
+                <span>
+                  <strong>Ligação</strong>
+                  +55 (45) 3284-2212
+                </span>
+              </a>
+            </div>
+          </aside>
+
+          <form
+            className="contact-form-card"
+            name={CONTACT_FORM_NAME}
+            method="POST"
+            data-netlify="true"
+            onSubmit={submitContactForm}
+          >
+            <input type="hidden" name="form-name" value={CONTACT_FORM_NAME} />
+            <div className="contact-form-heading">
+              <p className="section-kicker">Formulário</p>
+              <h2>Envie sua mensagem</h2>
+            </div>
+
+            <div className="form-grid">
+              <label className="form-field">
+                <span>Nome</span>
+                <input
+                  name="name"
+                  type="text"
+                  value={formValues.name}
+                  onChange={updateFormValue}
+                  autoComplete="name"
+                  required
+                />
+              </label>
+
+              <label className="form-field">
+                <span>Número de telefone</span>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={formValues.phone}
+                  onChange={updateFormValue}
+                  autoComplete="tel"
+                  inputMode="tel"
+                  required
+                />
+              </label>
+            </div>
+
+            <label className="form-field">
+              <span>E-mail</span>
+              <input
+                name="email"
+                type="email"
+                value={formValues.email}
+                onChange={updateFormValue}
+                autoComplete="email"
+                required
+              />
+            </label>
+
+            <fieldset className="contact-preference">
+              <legend>Como deseja que contatemos?</legend>
+              <div className="preference-options">
+                {contactPreferenceOptions.map((option) => (
+                  <label
+                    className={`preference-option${
+                      formValues.preferredContact === option
+                        ? " is-selected"
+                        : ""
+                    }`}
+                    key={option}
+                  >
+                    <input
+                      type="radio"
+                      name="preferredContact"
+                      value={option}
+                      checked={formValues.preferredContact === option}
+                      onChange={updateFormValue}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <label className="form-field">
+              <span>Mensagem</span>
+              <textarea
+                name="message"
+                value={formValues.message}
+                onChange={updateFormValue}
+                rows="6"
+                required
+              />
+            </label>
+
+            <div className="contact-form-footer">
+              <button
+                className="btn btn-primary contact-submit"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                <Send aria-hidden="true" />
+                {isSubmitting ? "Enviando..." : "Enviar mensagem"}
+              </button>
+              {formStatus === "success" ? (
+                <p className="contact-form-status is-success" role="status">
+                  Mensagem enviada. Em breve a equipe da BZS retorna o contato.
+                </p>
+              ) : null}
+              {formStatus === "error" ? (
+                <p className="contact-form-status is-error" role="alert">
+                  Não foi possível enviar agora. Tente novamente ou fale pelo
+                  WhatsApp.
+                </p>
+              ) : null}
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -1430,6 +1666,7 @@ function AppShell() {
       <Header theme={theme} onToggleTheme={toggleTheme} />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/contato" element={<ContactPage />} />
         <Route path="/sistemas/:slug" element={<SystemPage />} />
         <Route path="/politica-de-privacidade" element={<PrivacyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

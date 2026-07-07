@@ -577,6 +577,7 @@ button {
 
 .intro-grid h2,
 .section-heading h2,
+.about-copy h2,
 .method-copy h2,
 .contact-grid h2 {
   margin: 0;
@@ -586,6 +587,7 @@ button {
 
 .intro-grid p,
 .section-heading p,
+.about-copy p,
 .method-copy p,
 .contact-grid p {
   margin: 18px 0 0;
@@ -600,6 +602,88 @@ button {
 
 .section-heading.compact {
   max-width: 790px;
+}
+
+.about-section {
+  background: var(--paper);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.98fr) minmax(340px, 0.8fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.about-copy {
+  max-width: 720px;
+}
+
+.about-stats {
+  margin: 34px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.about-stats div {
+  min-height: 128px;
+  padding: 20px;
+  background: var(--surface);
+}
+
+.about-stats dt {
+  margin: 0;
+  color: var(--teal-dark);
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.about-stats dd {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.about-points {
+  display: grid;
+  gap: 14px;
+}
+
+.about-point {
+  min-height: 112px;
+  padding: 20px 0;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.about-point:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.about-point svg {
+  width: 28px;
+  height: 28px;
+  color: var(--teal-dark);
+}
+
+.about-point h3 {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+
+.about-point p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .solution-grid {
@@ -1683,6 +1767,7 @@ button {
   }
 
   .intro-grid,
+  .about-grid,
   .method-grid,
   .contact-grid,
   .reviews-header,
@@ -1774,6 +1859,14 @@ button {
 
   .intro-band {
     padding: 34px 0;
+  }
+
+  .about-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .about-stats div {
+    min-height: auto;
   }
 
   .solution-card,

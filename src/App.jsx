@@ -51,6 +51,7 @@ const GOOGLE_REVIEWS_URL =
   "https://www.google.com/maps/place/BZS+Tecnologia/@-24.5590077,-54.0578357,20.13z/data=!4m6!3m5!1s0x94f38040b2ca4f03:0xd3b9314d9cbdd55f!8m2!3d-24.5590114!4d-54.0576494!16s%2Fg%2F11c1s8pq90";
 const THEME_STORAGE_KEY = "bzs-theme";
 const STAR_RATING_VALUES = [1, 2, 3, 4, 5];
+const COUNT_UP_DURATION_MS = 1100;
 
 function getSystemThemePreference() {
   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -98,6 +99,7 @@ function getWhatsAppHref(message) {
 }
 
 const navItems = [
+  { to: "/#sobre", label: "Sobre nós" },
   { to: "/#solucoes", label: "Soluções" },
   { to: "/#diferenciais", label: "Diferenciais" },
   { to: "/#metodo", label: "Método" },
@@ -106,6 +108,7 @@ const navItems = [
 
 const footerPageLinks = [
   { to: "/", label: "Início" },
+  { to: "/#sobre", label: "Sobre nós" },
   { to: "/#solucoes", label: "Soluções" },
   { to: "/#diferenciais", label: "Diferenciais" },
   { to: "/#metodo", label: "Método" },
@@ -154,6 +157,40 @@ const steps = [
     number: "03",
     title: "Evolução",
     text: "Acompanhamento para ajustes, novas necessidades e melhoria contínua.",
+  },
+];
+
+const aboutHighlights = [
+  {
+    title: "Tecnologia aplicada à rotina",
+    text: "A BZS desenvolve sistemas para simplificar processos que exigem controle, rastreabilidade e informação confiável.",
+  },
+  {
+    title: "Proximidade com o cliente",
+    text: "Cada solução nasce do entendimento da operação, com apoio na implantação, no uso e na evolução do sistema.",
+  },
+  {
+    title: "Visão de longo prazo",
+    text: "As plataformas são pensadas para acompanhar mudanças, integrar novas necessidades e dar base para decisões melhores.",
+  },
+];
+
+const aboutStats = [
+  {
+    id: "market-years",
+    target: 30,
+    prefix: "+",
+    label: "anos no mercado",
+  },
+  {
+    id: "states",
+    target: 5,
+    label: "estados atendidos",
+  },
+  {
+    id: "cloud",
+    value: "Nuvem",
+    label: "soluções com acesso seguro",
   },
 ];
 
@@ -423,6 +460,148 @@ function Solutions() {
               </article>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function useCountUp(target, shouldStart) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!shouldStart) {
+      return undefined;
+    }
+
+    if (isReducedMotionPreferred()) {
+      setCount(target);
+      return undefined;
+    }
+
+    let frameId;
+    let startTime;
+
+    const updateCount = (timestamp) => {
+      if (startTime === undefined) {
+        startTime = timestamp;
+      }
+
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / COUNT_UP_DURATION_MS, 1);
+      const easedProgress = 1 - (1 - progress) ** 3;
+
+      setCount(Math.round(target * easedProgress));
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(updateCount);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(updateCount);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [shouldStart, target]);
+
+  return count;
+}
+
+function StatValue({ stat, shouldAnimate }) {
+  const animatedValue = useCountUp(
+    stat.target ?? 0,
+    shouldAnimate && Number.isFinite(stat.target),
+  );
+
+  if (!Number.isFinite(stat.target)) {
+    return stat.value;
+  }
+
+  return `${stat.prefix ?? ""}${animatedValue}${stat.suffix ?? ""}`;
+}
+
+function About() {
+  const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    const statsElement = statsRef.current;
+
+    if (!statsElement || shouldAnimateStats) {
+      return undefined;
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+      setShouldAnimateStats(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldAnimateStats(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(statsElement);
+
+    return () => observer.disconnect();
+  }, [shouldAnimateStats]);
+
+  return (
+    <section
+      className="section about-section"
+      id="sobre"
+      aria-labelledby="about-title"
+    >
+      <div className="section-inner about-grid">
+        <div className="about-copy">
+          <p className="section-kicker">Sobre nós</p>
+          <h2 id="about-title">
+            A BZS cria tecnologia para tornar a gestão mais clara, segura e
+            eficiente.
+          </h2>
+          <p>
+            Com mais de 30 anos no mercado e atuação em Marechal Cândido Rondon
+            - PR, a BZS Tecnologia desenvolve sistemas em nuvem para
+            organizações que precisam transformar processos complexos em rotinas
+            mais simples de acompanhar.
+          </p>
+          <p>
+            A história da empresa é construída próxima dos clientes: ouvindo a
+            operação, entendendo os desafios de cada setor e evoluindo soluções
+            para áreas como gestão pública, reciclagem, transporte escolar,
+            bibliotecas, diagnósticos municipais e medição individualizada.
+          </p>
+
+          <dl
+            className="about-stats"
+            aria-label="Números da BZS"
+            ref={statsRef}
+          >
+            {aboutStats.map((item) => (
+              <div key={item.id}>
+                <dt>
+                  <StatValue stat={item} shouldAnimate={shouldAnimateStats} />
+                </dt>
+                <dd>{item.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div className="about-points" aria-label="Pilares da BZS">
+          {aboutHighlights.map((item) => (
+            <article className="about-point" key={item.title}>
+              <CheckCircle2 aria-hidden="true" />
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -747,6 +926,7 @@ function HomePage() {
         </div>
       </section>
 
+      <About />
       <Solutions />
       <Features />
       <Method />

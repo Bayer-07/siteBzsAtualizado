@@ -709,11 +709,6 @@ button {
   box-shadow: var(--card-shadow);
 }
 
-.solution-card:nth-child(4),
-.solution-card:nth-child(5) {
-  grid-column: span 3;
-}
-
 .icon-box {
   width: 46px;
   height: 46px;
@@ -1806,9 +1801,7 @@ button {
     flex-basis: calc((100% - 16px) / 2);
   }
 
-  .solution-card,
-  .solution-card:nth-child(4),
-  .solution-card:nth-child(5) {
+  .solution-card {
     grid-column: auto;
   }
 

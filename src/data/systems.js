@@ -13,6 +13,8 @@ import transporteScreen from "../assets/systems/transporte-screen.webp";
 import transporteDetail from "../assets/systems/transporte-detail.webp";
 import bibliotecasIcon from "../assets/systems/bibliotecas-icon.webp";
 import bibliotecasScreen from "../assets/systems/bibliotecas-screen.webp";
+import cartaoPontoIcon from "../assets/systems/cartao-ponto-icon.webp";
+import cartaoPontoScreen from "../assets/systems/cartao-ponto-screen.webp";
 
 const systemsData = [
   {
@@ -299,6 +301,63 @@ const systemsData = [
     ],
     gallery: [],
   },
+  {
+    slug: "cartao-ponto",
+    title: "Cartão Ponto",
+    headline: "Registro de ponto em nuvem com reconhecimento facial",
+    summary:
+      "Sistema de cartão ponto em nuvem com reconhecimento facial, banco de horas, planilha completa dos registros e aplicativo para marcações em trânsito.",
+    intro:
+      "O Sistema de Cartão Ponto da BZS Tecnologia foi pensado para empresas que precisam registrar, consultar e acompanhar a jornada da equipe com mais praticidade. A solução reúne reconhecimento facial, controle em nuvem, banco de horas e aplicativo para registro em trânsito em uma rotina simples de consultar.",
+    audience:
+      "Empresas, equipes administrativas, profissionais externos e operações que precisam controlar registros de ponto com segurança.",
+    icon: cartaoPontoIcon,
+    image: cartaoPontoScreen,
+    iconKey: "timecard",
+    tags: ["Cartão ponto", "Reconhecimento facial", "Banco de horas", "Aplicativo"],
+    contextTitle: "Do registro de ponto à consulta completa",
+    contextText:
+      "A plataforma organiza as marcações da equipe em um ambiente online, reduzindo controles soltos e facilitando a conferência dos registros. Quem trabalha fora da empresa também pode registrar o ponto pelo aplicativo.",
+    contextPoints: [
+      "Registro de ponto com reconhecimento facial.",
+      "Planilha completa para consulta dos registros.",
+      "Banco de horas acompanhado dentro do sistema em nuvem.",
+      "Aplicativo para registro em trânsito.",
+    ],
+    modules: [
+      {
+        title: "Reconhecimento facial",
+        text: "Validação do colaborador no momento do registro para tornar a marcação de ponto mais segura.",
+      },
+      {
+        title: "Planilha completa dos registros",
+        text: "Consulta organizada das marcações para análise, conferência e apoio à rotina administrativa.",
+      },
+      {
+        title: "Banco de horas",
+        text: "Acompanhamento dos saldos de horas para dar mais clareza à gestão da jornada.",
+      },
+      {
+        title: "Sistema em nuvem",
+        text: "Acesso online às informações, com mais praticidade para consultar dados quando necessário.",
+      },
+      {
+        title: "Aplicativo para registro em trânsito",
+        text: "Permite registrar o ponto mesmo em deslocamento, apoiando equipes externas e rotinas fora da sede.",
+      },
+      {
+        title: "Consulta com a equipe BZS",
+        text: "A BZS entende a necessidade da empresa e apresenta as informações necessárias para implantação.",
+      },
+    ],
+    benefits: [
+      "Reduz controles manuais e planilhas isoladas.",
+      "Aumenta a confiabilidade dos registros de ponto.",
+      "Facilita o acompanhamento de banco de horas.",
+      "Dá suporte para equipes que registram ponto fora da empresa.",
+    ],
+    gallery: [],
+  },
 ];
 
 const systemOrder = [
@@ -307,6 +366,7 @@ const systemOrder = [
   "bzs-recicle",
   "selfie",
   "bibliotecas",
+  "cartao-ponto",
 ];
 
 export const systems = systemOrder

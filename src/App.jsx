@@ -4,6 +4,7 @@ import {
   ArrowRight,
   Bus,
   CheckCircle2,
+  ClipboardClock,
   CloudCog,
   Droplets,
   ExternalLink,
@@ -122,6 +123,7 @@ const iconMap = {
   library: Library,
   recycle: Recycle,
   selfie: ScanFace,
+  timecard: ClipboardClock,
 };
 
 const features = [

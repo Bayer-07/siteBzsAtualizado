@@ -611,7 +611,8 @@ button {
 .about-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.98fr) minmax(340px, 0.8fr);
-  gap: 56px;
+  column-gap: 56px;
+  row-gap: 34px;
   align-items: start;
 }
 
@@ -620,7 +621,8 @@ button {
 }
 
 .about-stats {
-  margin: 34px 0 0;
+  grid-column: 1 / -1;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
@@ -633,6 +635,9 @@ button {
 .about-stats div {
   min-height: 128px;
   padding: 20px;
+  display: grid;
+  place-content: center;
+  text-align: center;
   background: var(--surface);
 }
 

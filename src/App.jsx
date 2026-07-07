@@ -576,20 +576,6 @@ function About() {
             bibliotecas, diagnósticos municipais e medição individualizada.
           </p>
 
-          <dl
-            className="about-stats"
-            aria-label="Números da BZS"
-            ref={statsRef}
-          >
-            {aboutStats.map((item) => (
-              <div key={item.id}>
-                <dt>
-                  <StatValue stat={item} shouldAnimate={shouldAnimateStats} />
-                </dt>
-                <dd>{item.label}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
         <div className="about-points" aria-label="Pilares da BZS">
@@ -603,6 +589,21 @@ function About() {
             </article>
           ))}
         </div>
+
+        <dl
+          className="about-stats"
+          aria-label="Números da BZS"
+          ref={statsRef}
+        >
+          {aboutStats.map((item) => (
+            <div key={item.id}>
+              <dt>
+                <StatValue stat={item} shouldAnimate={shouldAnimateStats} />
+              </dt>
+              <dd>{item.label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

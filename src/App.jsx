@@ -410,7 +410,7 @@ function Hero() {
 
         <dl className="hero-proof" aria-label="Áreas de atuação">
           <div>
-            <dt>5</dt>
+            <dt>6</dt>
             <dd>frentes de software</dd>
           </div>
           <div>

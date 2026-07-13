@@ -20,7 +20,6 @@ import {
   Play,
   Recycle,
   ScanFace,
-  Send,
   ShieldCheck,
   Star,
   Sun,
@@ -55,7 +54,6 @@ const GOOGLE_REVIEWS_URL =
 const THEME_STORAGE_KEY = "bzs-theme";
 const STAR_RATING_VALUES = [1, 2, 3, 4, 5];
 const COUNT_UP_DURATION_MS = 1100;
-const CONTACT_FORM_NAME = "site-contact";
 
 function getSystemThemePreference() {
   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -101,16 +99,6 @@ const whatsappMessages = {
 function getWhatsAppHref(message) {
   return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 }
-
-const contactPreferenceOptions = ["WhatsApp", "E-mail", "Ligação"];
-
-const initialContactFormValues = {
-  name: "",
-  phone: "",
-  email: "",
-  message: "",
-  preferredContact: contactPreferenceOptions[0],
-};
 
 const navItems = [
   { to: "/#sobre", label: "Sobre nós" },
@@ -922,47 +910,6 @@ function Contact() {
 }
 
 function ContactPage() {
-  const [formValues, setFormValues] = useState(initialContactFormValues);
-  const [formStatus, setFormStatus] = useState("idle");
-  const isSubmitting = formStatus === "submitting";
-
-  const updateFormValue = (event) => {
-    const { name, value } = event.target;
-
-    setFormValues((currentValues) => ({
-      ...currentValues,
-      [name]: value,
-    }));
-    setFormStatus("idle");
-  };
-
-  const submitContactForm = async (event) => {
-    event.preventDefault();
-    setFormStatus("submitting");
-
-    const formBody = new URLSearchParams({
-      "form-name": CONTACT_FORM_NAME,
-      ...formValues,
-    });
-
-    try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formBody.toString(),
-      });
-
-      if (!response.ok) {
-        throw new Error("Contact form submission failed.");
-      }
-
-      setFormValues(initialContactFormValues);
-      setFormStatus("success");
-    } catch {
-      setFormStatus("error");
-    }
-  };
-
   return (
     <main id="conteudo" className="contact-page">
       <section className="contact-page-hero" aria-labelledby="contact-page-title">
@@ -980,163 +927,50 @@ function ContactPage() {
         </div>
       </section>
 
-      <section className="section contact-form-section">
-        <div className="section-inner contact-form-layout">
-          <aside className="contact-page-aside" aria-label="Canais de contato">
-            <div>
-              <p className="section-kicker">Atendimento BZS</p>
-              <h2>Uma equipe próxima para entender sua rotina.</h2>
-              <p>
-                A BZS atende empresas, órgãos públicos e equipes que precisam
-                de sistemas em nuvem para controlar processos com mais clareza.
-              </p>
-            </div>
+      <section className="section contact-page-section">
+        <div className="section-inner contact-page-content">
+          <div className="contact-page-intro">
+            <p className="section-kicker">Atendimento BZS</p>
+            <h2>Uma equipe próxima para entender sua rotina.</h2>
+            <p>
+              A BZS atende empresas, órgãos públicos e equipes que precisam de
+              sistemas em nuvem para controlar processos com mais clareza.
+            </p>
+          </div>
 
-            <div className="contact-methods">
-              <a
-                className="contact-method"
-                href={getWhatsAppHref(whatsappMessages.contact)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <MessageCircle aria-hidden="true" />
-                <span>
-                  <strong>WhatsApp</strong>
-                  +55 (45) 3284-2212
-                </span>
-              </a>
-              <a
-                className="contact-method"
-                href="mailto:bzs@bzs.com.br"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Mail aria-hidden="true" />
-                <span>
-                  <strong>E-mail</strong>
-                  bzs@bzs.com.br
-                </span>
-              </a>
-              <a className="contact-method" href="tel:+554532842212">
-                <Phone aria-hidden="true" />
-                <span>
-                  <strong>Ligação</strong>
-                  +55 (45) 3284-2212
-                </span>
-              </a>
-            </div>
-          </aside>
-
-          <form
-            className="contact-form-card"
-            name={CONTACT_FORM_NAME}
-            method="POST"
-            data-netlify="true"
-            onSubmit={submitContactForm}
-          >
-            <input type="hidden" name="form-name" value={CONTACT_FORM_NAME} />
-            <div className="contact-form-heading">
-              <p className="section-kicker">Formulário</p>
-              <h2>Envie sua mensagem</h2>
-            </div>
-
-            <div className="form-grid">
-              <label className="form-field">
-                <span>Nome</span>
-                <input
-                  name="name"
-                  type="text"
-                  value={formValues.name}
-                  onChange={updateFormValue}
-                  autoComplete="name"
-                  required
-                />
-              </label>
-
-              <label className="form-field">
-                <span>Número de telefone</span>
-                <input
-                  name="phone"
-                  type="tel"
-                  value={formValues.phone}
-                  onChange={updateFormValue}
-                  autoComplete="tel"
-                  inputMode="tel"
-                  required
-                />
-              </label>
-            </div>
-
-            <label className="form-field">
-              <span>E-mail</span>
-              <input
-                name="email"
-                type="email"
-                value={formValues.email}
-                onChange={updateFormValue}
-                autoComplete="email"
-                required
-              />
-            </label>
-
-            <fieldset className="contact-preference">
-              <legend>Como deseja que contatemos?</legend>
-              <div className="preference-options">
-                {contactPreferenceOptions.map((option) => (
-                  <label
-                    className={`preference-option${
-                      formValues.preferredContact === option
-                        ? " is-selected"
-                        : ""
-                    }`}
-                    key={option}
-                  >
-                    <input
-                      type="radio"
-                      name="preferredContact"
-                      value={option}
-                      checked={formValues.preferredContact === option}
-                      onChange={updateFormValue}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <label className="form-field">
-              <span>Mensagem</span>
-              <textarea
-                name="message"
-                value={formValues.message}
-                onChange={updateFormValue}
-                rows="6"
-                required
-              />
-            </label>
-
-            <div className="contact-form-footer">
-              <button
-                className="btn btn-primary contact-submit"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                <Send aria-hidden="true" />
-                {isSubmitting ? "Enviando..." : "Enviar mensagem"}
-              </button>
-              {formStatus === "success" ? (
-                <p className="contact-form-status is-success" role="status">
-                  Mensagem enviada. Em breve a equipe da BZS retorna o contato.
-                </p>
-              ) : null}
-              {formStatus === "error" ? (
-                <p className="contact-form-status is-error" role="alert">
-                  Não foi possível enviar agora. Tente novamente ou fale pelo
-                  WhatsApp.
-                </p>
-              ) : null}
-            </div>
-          </form>
+          <div className="contact-methods" aria-label="Canais de contato">
+            <a
+              className="contact-method"
+              href={getWhatsAppHref(whatsappMessages.contact)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MessageCircle aria-hidden="true" />
+              <span>
+                <strong>WhatsApp</strong>
+                +55 (45) 3284-2212
+              </span>
+            </a>
+            <a
+              className="contact-method"
+              href="mailto:bzs@bzs.com.br"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Mail aria-hidden="true" />
+              <span>
+                <strong>E-mail</strong>
+                bzs@bzs.com.br
+              </span>
+            </a>
+            <a className="contact-method" href="tel:+554532842212">
+              <Phone aria-hidden="true" />
+              <span>
+                <strong>Ligação</strong>
+                +55 (45) 3284-2212
+              </span>
+            </a>
+          </div>
         </div>
       </section>
     </main>

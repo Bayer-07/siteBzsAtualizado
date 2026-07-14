@@ -146,9 +146,9 @@ const systemsData = [
     title: "Controle Água e Gás",
     headline: "Medição individualizada com menos retrabalho e mais transparência",
     summary:
-      "Sistema para automatizar etapas de medição, cálculo, faturamento, cobrança e acompanhamento financeiro de água e gás em condomínios.",
+      "Sistema para automatizar etapas de medição, cálculo, faturamento, cobrança e acompanhamento financeiro de água e gás.",
     intro:
-      "Empresas que fazem medição de água e gás convivem com coleta manual, inserção duplicada de dados, erros, cobranças demoradas e controle difícil de inadimplência. O Controle Água e Gás automatiza o fluxo para dar mais precisão, agilidade e qualidade no atendimento aos condomínios.",
+      "Empresas que fazem medição de água e gás convivem com coleta manual, inserção duplicada de dados, erros, cobranças demoradas e controle difícil de inadimplência. O Controle Água e Gás automatiza o fluxo para dar mais precisão, agilidade e qualidade no atendimento aos seus clientes.",
     audience: "Empresas terceirizadas de medição, administradoras e condomínios.",
     icon: aguaGasIcon,
     image: aguaGasScreen,

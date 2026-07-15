@@ -61,7 +61,34 @@ Para gerar a versão final:
 npm run build
 ```
 
-O resultado fica em `dist/`. Essa pasta pode ser publicada em qualquer hospedagem estática ou usada pelo fluxo de deploy configurado no projeto.
+O resultado fica em `dist/`. Publique o conteúdo dessa pasta no diretório configurado como `DocumentRoot` do Apache.
+
+### Apache
+
+O build inclui um arquivo `.htaccess` que direciona as rotas do React Router para o `index.html`. Isso permite atualizar ou acessar diretamente páginas como `/sistemas/controle-agua-gas` sem receber erro 404.
+
+No servidor Debian, habilite o módulo de reescrita:
+
+```bash
+sudo a2enmod rewrite
+sudo systemctl reload apache2
+```
+
+O diretório do site também precisa permitir as regras do `.htaccess`. Na configuração do VirtualHost, use o caminho real do site:
+
+```apache
+<Directory /var/www/bzs>
+    AllowOverride All
+    Require all granted
+</Directory>
+```
+
+Depois de alterar o VirtualHost, valide e recarregue o Apache:
+
+```bash
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+```
 
 ## Observações
 
